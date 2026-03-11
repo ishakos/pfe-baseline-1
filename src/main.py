@@ -5,7 +5,7 @@ from pipeline import build_model
 from evaluate import evaluate_model
 
 
-DATA_PATH = "../data/iot_dataset_clean.csv"
+DATA_PATH = "../data/iot_dataset_clean2.csv"
 
 
 def main():

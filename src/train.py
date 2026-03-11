@@ -44,7 +44,7 @@ def train_model(model, X, y):
 
     print(feat_importance.head(15))
     """
-
+    
     joblib.dump(model, "../model/random_forest.pkl")
 
     return model, X_test, y_test

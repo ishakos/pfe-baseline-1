@@ -20,23 +20,28 @@ cols_to_drop = [
     "dst_ip",
     "src_port",
     "dst_port",
+    "conn_state",
+    "service",
     # High-cardinality text fields
     "dns_query",
     "dns_AA",
     "dns_RD",
     "dns_RA",
+    "dns_rcode",
     "ssl_subject",
     "ssl_issuer",
+    "ssl_established",
     "http_uri",
     "http_user_agent",
     "http_orig_mime_types",
     "http_resp_mime_types",
+    "http_status_code",
     "weird_addl",
     "weird_name",
     "weird_notice",
 ]
 
-# For now we have 27 features, as ai told me, research usually keep: 15-25 features.
+# For now we have 22 features, as ai told me, research usually keep: 15-25 features.
 col_to_keep = [
     # Flow statistics
     "duration",
@@ -49,25 +54,20 @@ col_to_keep = [
     "missed_bytes",
     # Protocol / service
     "proto",
-    "service",
-    "conn_state",
     # DNS features
     "dns_qclass",
     "dns_qtype",
-    "dns_rcode",
     "dns_rejected",
     # SSL features
     "ssl_version",
     "ssl_cipher",
     "ssl_resumed",
-    "ssl_established",
     # HTTP features
     "http_method",
     "http_version",
     "http_trans_depth",
     "http_request_body_len",
     "http_response_body_len",
-    "http_status_code",
     # Labels
     "label",
     "type",
@@ -147,6 +147,6 @@ raw_dataset = raw_dataset.drop_duplicates().reset_index(drop=True)
 # 9. Save cleaned dataset
 # =========================
 
-raw_dataset.to_csv("../data/iot_dataset_clean.csv", index=False)
+raw_dataset.to_csv("../data/iot_dataset_clean2.csv", index=False)
 
 print("Clean dataset saved successfully.")

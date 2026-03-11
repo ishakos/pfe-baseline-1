@@ -1,12 +1,6 @@
 import pandas as pd
-import numpy as np
 import joblib
-from sklearn.dummy import DummyClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.impute import SimpleImputer
-from imblearn.over_sampling import SMOTE
-from sklearn.feature_selection import VarianceThreshold
-from sklearn.preprocessing import StandardScaler
 
 
 def load_clean_data(path):
@@ -39,7 +33,6 @@ def train_model(model, X, y):
         random_state=42,
         stratify=y
     )
-    y_train = np.random.permutation(y_train)
 
     model.fit(X_train, y_train)
 

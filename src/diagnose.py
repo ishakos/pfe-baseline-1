@@ -36,11 +36,6 @@ try:
 except:
     pass
 
-try:
-    import tensorflow as tf
-except:
-    pass
-
 # ===============================
 # HELPER FUNCTIONS
 # ===============================
@@ -50,8 +45,6 @@ def load_model(model_path):
     ext = os.path.splitext(model_path)[1]
     if ext in [".pkl", ".joblib"]:
         return joblib.load(model_path)
-    elif ext == ".h5":
-        return tf.keras.models.load_model(model_path)
     else:
         raise ValueError("Unsupported model format. Use .pkl, .joblib, or .h5")
 

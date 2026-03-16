@@ -19,6 +19,9 @@ def split_features_target(df):
     'dst_bytes',
     'src_ip_bytes', 
     'dst_ip_bytes', 
+    'http_version',
+    'http_method',
+    'ssl_resumed',
     "label",
     "type",
     ], errors="ignore")

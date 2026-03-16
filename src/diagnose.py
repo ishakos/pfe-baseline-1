@@ -10,6 +10,10 @@ import os
 import sys
 import matplotlib.pyplot as plt
 import seaborn as sns
+import shap
+import json
+import warnings
+warnings.filterwarnings("ignore")
 from sklearn.dummy import DummyClassifier
 from sklearn.model_selection import cross_val_score, StratifiedKFold, learning_curve
 from sklearn.metrics import (
@@ -19,11 +23,9 @@ from sklearn.metrics import (
 from sklearn.inspection import permutation_importance
 from sklearn.calibration import calibration_curve
 from scipy.stats import ks_2samp
-import json
-import warnings
 from train import split_features_target
 from train import get_train_test_data
-warnings.filterwarnings("ignore")
+from collections import Counter
 
 # Support XGBoost / LightGBM / Keras
 try:
@@ -207,8 +209,13 @@ def data_quality_checks(X_train, X_test, y_train, y_test):
     y_test = np.bincount(y_test)
 
     # Class imbalance
-    results["train_class_dist"] = dict(zip([0,1], np.bincount(y_train)))
-    results["test_class_dist"] = dict(zip([0,1], np.bincount(y_test)))
+    train_dist = Counter(y_train)
+    test_dist = Counter(y_test)
+
+    print("\nClass distribution:")
+
+    print("Train:", train_dist)
+    print("Test:", test_dist)
 
     # Missing / duplicate
     results["missing_values"] = X_test.isnull().sum().sum()
@@ -241,11 +248,77 @@ def make_json_serializable(obj):
     elif isinstance(obj, (list, tuple)):
         return [make_json_serializable(item) for item in obj]
     return obj
+
+def detect_high_correlation(X, threshold=0.9):
+
+    corr_matrix = X.corr().abs()
+
+    upper = corr_matrix.where(
+        np.triu(np.ones(corr_matrix.shape), k=1).astype(bool)
+    )
+
+    high_corr = [
+        column for column in upper.columns
+        if any(upper[column] > threshold)
+    ]
+
+    print("\nHighly correlated features:", high_corr)
+
+    return high_corr
+
+def correlation_heatmap(X):
+
+    plt.figure(figsize=(12,8))
+
+    sns.heatmap(
+        X.corr(),
+        cmap="coolwarm",
+        center=0
+    )
+
+    plt.title("Feature Correlation Heatmap")
+
+    plt.show()
+
+def plot_learning_curve(model, X, y):
+
+    train_sizes, train_scores, test_scores = learning_curve(
+        model,
+        X,
+        y,
+        cv=5,
+        scoring="f1",
+        n_jobs=-1,
+        train_sizes=np.linspace(0.1,1.0,5)
+    )
+
+    train_mean = train_scores.mean(axis=1)
+    test_mean = test_scores.mean(axis=1)
+
+    plt.plot(train_sizes, train_mean, label="Training Score")
+    plt.plot(train_sizes, test_mean, label="Validation Score")
+
+    plt.xlabel("Training Size")
+    plt.ylabel("F1 Score")
+    plt.title("Learning Curve")
+
+    plt.legend()
+    plt.show()
+
+
+
+def shap_analysis(model, X_sample):
+
+    explainer = shap.TreeExplainer(model)
+
+    shap_values = explainer.shap_values(X_sample)
+
+    shap.summary_plot(shap_values, X_sample)
 # ===============================
 # MAIN FUNCTION
 # ===============================
 
-def diagnose_model(model_path, X_test, y_test, X_train=None, y_train=None):
+def diagnose_model(model_path, X_test, y_test, X_train=None, y_train=None, X=None, y=None):
     model = load_model(model_path)
     report = {}
 
@@ -266,9 +339,18 @@ def diagnose_model(model_path, X_test, y_test, X_train=None, y_train=None):
         report["data_quality"] = data_quality_checks(X_train, X_test, y_train, y_test)
     # Calibration
     report["calibration"] = model_calibration(model, X_test, y_test)
+    # Correlation
+    report["correlation"] = detect_high_correlation(X)
+    # Heatmap
+    report["correlation_heatmap"] = correlation_heatmap(X_train)
+    # Learning curve
+    report["learning_curve"] = plot_learning_curve(model, X, y)
+    # SHAP analysis
+    X_sample = X_train.sample(1000)
+    report["shap_analysis"] = shap_analysis(model, X_sample)
 
     # Print summary
-    print("\n🚨 MODEL HEALTH REPORT 🚨")
+    print("\nðŸš¨ MODEL HEALTH REPORT ðŸš¨")
     print("="*50)
     print(json.dumps(make_json_serializable(report), indent=4))
 
@@ -289,4 +371,4 @@ if __name__ == "__main__":
         raise ValueError("Test CSV must contain 'label' column")
     X, y = split_features_target(df)
     X_train, X_test, y_train, y_test = get_train_test_data(X, y)
-    diagnose_model(args.model, X_test, y_test, X_train, y_train)
+    diagnose_model(args.model, X_test, y_test, X_train, y_train, X, y)

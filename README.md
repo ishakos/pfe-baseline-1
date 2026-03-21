@@ -168,6 +168,7 @@ Future work includes:
 ---
 
 ## 📂 Project Structure
+```
 Model-1/
 │── src/
 │ ├── main.py
@@ -190,7 +191,7 @@ Model-1/
 Data/
 │── preprocess.py
 │── iot_dataset_clean.csv
-
+```
 
 ---
 
@@ -203,5 +204,7 @@ python preprocess.py
 ```
 
 ### 2. Train and evaluate model
+```bash
 cd Model-1/src
 python main.py
+```

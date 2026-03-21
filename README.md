@@ -197,10 +197,9 @@ Data/
 
 ## ▶️ How to Run
 
-### 1. Preprocess the dataset
+### 1. Get the cleaned dataset first
 ```bash
 git clone https://github.com/ishakos/pfe-dataset.git
-python preprocess.py
 ```
 
 ### 2. Train and evaluate model

@@ -1,4 +1,4 @@
-# IoT Malware Detection – Classical Baseline (Random Forest)
+# Random Forest Baseline for IoT Malware Detection
 
 ## 📌 Project Overview
 

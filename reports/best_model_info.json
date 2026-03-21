@@ -1,0 +1,20 @@
+{
+    "best_model_name": "random_forest",
+    "selection_metric": "validation_f1",
+    "numeric_columns": [
+        "duration",
+        "src_bytes",
+        "dst_bytes",
+        "missed_bytes",
+        "src_pkts",
+        "src_ip_bytes",
+        "dst_pkts",
+        "dst_ip_bytes",
+        "dns_qclass",
+        "dns_qtype",
+        "http_trans_depth",
+        "http_request_body_len",
+        "http_response_body_len"
+    ],
+    "categorical_columns": []
+}

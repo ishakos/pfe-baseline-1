@@ -1,0 +1,17 @@
+{
+    "train_shape": [
+        57518,
+        19
+    ],
+    "val_shape": [
+        19173,
+        19
+    ],
+    "test_shape": [
+        19173,
+        19
+    ],
+    "train_positive_ratio": 0.7450363364511979,
+    "val_positive_ratio": 0.7450581546967089,
+    "test_positive_ratio": 0.7450581546967089
+}

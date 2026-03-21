@@ -168,3 +168,40 @@ Future work includes:
 ---
 
 ## 📂 Project Structure
+Model-1/
+│── src/
+│ ├── main.py
+│ ├── train.py
+│ ├── pipeline.py
+│ ├── evaluate.py
+│ ├── diagnose.py
+│ ├── config.py
+│
+│── model/
+│ └── random_forest_final.joblib
+│
+│── reports/
+│ ├── metrics.json
+│ ├── model_comparison.json
+│ ├── feature_ablation.json
+│ ├── robustness_report.json
+│ └── plots/
+│
+Data/
+│── preprocess.py
+│── iot_dataset_clean.csv
+
+
+---
+
+## ▶️ How to Run
+
+### 1. Preprocess the dataset
+```bash
+git clone https://github.com/ishakos/pfe-dataset.git
+python preprocess.py
+```
+
+### 2. Train and evaluate model
+cd Model-1/src
+python main.py
